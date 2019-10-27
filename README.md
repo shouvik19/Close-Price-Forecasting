@@ -23,3 +23,14 @@ This is one of the most useful data analysis library which is extensively used f
 Keras 
 ======
 It is an open source neural network library written in Python. It is capable of running on top of MXNet, Deeplearning4j, TensorFlow, Microsoft Cognitive Toolkit or Theano.
+
+
+>  Methodology
+
+In this project, initially Feed Forward Backpropagation Neural Network was used for the prediction. Feed forward Neural Networks is unidirectional connection between the neurons that means the information can flow only in forward direction. Input has been fed into first layer and with the help of hidden layers connected to the last layer that produces the output. There is no connection among neurons in the same layer. Since information is constantly feeding forward from one layer to the next. Hence it is called feed forward neural network.
+
+The backpropagation algorithm falls into the general category of gradient descent algorithms. Purpose of gradient descent algorithm is to find the minima/maxima of a function by iteratively moving in the direction of negative slope of the function that we want to minimize/maximize. In our problem objective is to minimize the error function.
+
+In Back-propagation algorithm the network is trained by repeatedly processing the training data set and comparing the network output with the actual output to reduce the mean square error. Weights of the connections between various neurons has been modified and this process has been continued till the error comes within threshold value. It is Backpropagation algorithm as errors from output is back-propagating towards the input layer during training sessions with the objective of minimizing the mean square error. As back-propagated model can be continuously updated to minimize error.
+
+In addition to Feed Forward and Feed Forward Backpropagation Neural Network, Recurrent Neural Networks are also used for this project. A recurrent neural network (RNN) is a class of artificial neural network where connections between units form a directed cycle. This allows it to exhibit dynamic temporal behavior. Unlike feedforward neural networks, RNNs can use their internal memory to process arbitrary sequences of inputs. This makes them applicable to tasks such as unsegmented, connected handwriting recognition or speech recognition. Recurrent neural networks were developed in the 1980s. Hopfield networks were invented by John Hopfield in 1982. In 1993, a neural history compressor system solved a "Very Deep Learning" task that required more than 1000 subsequent layers in an RNN unfolded in time.

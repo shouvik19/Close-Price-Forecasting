@@ -1,0 +1,206 @@
+# data loading
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from keras.layers.core import Dense, Activation, Dropout
+# from keras.layers.recurrent import LSTM
+from keras.models import Sequential
+# Import `train_test_split` from `sklearn.model_selection`
+from sklearn.model_selection import train_test_split
+# Import `StandardScaler` from `sklearn.preprocessing`
+from sklearn.preprocessing import StandardScaler
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+from math import sqrt
+from numpy import concatenate
+from subprocess import check_output
+from keras.layers.core import Dense, Activation, Dropout
+from keras.layers.recurrent import LSTM
+from keras.models import Sequential
+from sklearn.model_selection import  train_test_split
+import time #helper libraries
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+from numpy import newaxis
+from sklearn.metrics import mean_squared_error
+import math
+from numpy.random import seed
+seed(1)
+import csv
+import pandas as pd
+import io
+import requests
+import time
+import datetime 
+from pandas.tseries.offsets import CustomBusinessDay
+from datetime import datetime
+from datetime import date
+from dateutil.parser import parse
+from datetime import datetime		
+from nsepy import get_history
+from datetime import date
+import shutil
+import glob
+
+						
+def getEvaluationDays(startdate, enddate):
+	holidays = ['20150126', '20150217', '20150306', '20150402', '20150403', '20150501', \
+					'20150815', '20150917', '20151002', '20151022', '20151111', '20151112', \
+					'20151125', '20151225', '20160126', '20160307', '20160324', '20160325', \
+					'20160414', '20160415', '20160419', '20160706', '20160815', '20160905', \
+					'20160913', '20161011', '20161012', '20161031', '20161114', '20170126', \
+					'20170224', '20170313', '20170404', '20170414', '20170501', '20170626', \
+					'20170815', '20170825', '20171002', '20171019', '20171020', '20171225']
+	evaluationDays = list()
+	startday = datetime.strptime(str(startdate), '%Y%m%d')
+	endday = datetime.strptime(str(enddate), '%Y%m%d')
+	allholidays = [datetime.strptime(holidaydate, '%Y%m%d') for holidaydate in holidays]
+	businessday = CustomBusinessDay(holidays=allholidays)
+	temp = startday
+	while temp <= endday:
+		if temp == (temp + 1 * businessday) - 1 * businessday:
+			dayStr = temp.strftime('%Y%m%d')
+			evaluationDays.append(dayStr)
+			temp = temp + 1 * businessday
+		else:
+			temp = temp + 1 * businessday
+			dayStr = temp.strftime('%Y%m%d')
+			evaluationDays.append(dayStr)
+			temp = temp + 1 * businessday
+	return evaluationDays
+
+z=getEvaluationDays('20171120','20171127')
+
+
+for i in z:
+	i = datetime.strptime(i, "%Y%m%d").date()
+	
+		
+	prices_dataset = get_history(symbol="NIFTY",
+							start=date(2011,1,1),
+							end=i,
+							index=True)
+		
+	prices_dataset= prices_dataset.reset_index()
+	
+
+	################################ y variable ##########################
+	prices_dataset['diff']=prices_dataset['Open']-prices_dataset['Close']
+
+
+	################################ input X ##################################
+	prices_dataset['O_C']=prices_dataset['Open']-prices_dataset['Close']
+
+
+	################################## (high-low/open-close) ###############################
+	prices_dataset['H_L/O_C'] = (prices_dataset['High']-prices_dataset['Low'])/np.abs(prices_dataset['Open']-prices_dataset['Close'])*100
+
+
+	############################## Highest high - lowest low ########################
+	prices_dataset['max']= pd.rolling_max(prices_dataset.High, 3)
+	prices_dataset['min']= pd.rolling_min(prices_dataset.Low, 3)
+	prices_dataset=prices_dataset.dropna()
+	prices_dataset=prices_dataset.replace([np.inf, -np.inf], np.nan)
+	prices_dataset['H_L']=prices_dataset['max']-prices_dataset['min']
+
+	n=5
+	############################### Standard Deviation ############################  
+	def STDDEV(prices_dataset, n):  
+		prices_dataset = prices_dataset.join(pd.Series(pd.rolling_std(prices_dataset['Close'], n), name = 'STD_' + str(n)))  
+		return prices_dataset  
+	prices_dataset=STDDEV(prices_dataset,n=5)
+	prices_dataset= prices_dataset.dropna()
+
+	########################################## data ###################################### 
+	X = prices_dataset[['H_L','H_L/O_C','STD_5']]
+	X = np.array(X)
+	Y = prices_dataset[['Date','Open','High','Low','Close','diff']]
+	Y = np.array(Y)	
+
+	# convert an array of values into a dataset matrix
+	###################################### reshape into X=t and Y=t+1 #############################
+	################################  X and Y creation ###################
+	def create_dataset(X,Y, look_back=1):
+		dataX, dataY = [], []
+		for i in range(len(X)-look_back-1):
+			a = X[i:(i+look_back), 0:3]
+			dataX.append(a)	
+			dataY.append(Y[i + look_back, 0:6])
+		return np.array(dataX), np.array(dataY)
+	lookback=1
+	X,Y= create_dataset(X,Y, look_back=1)
+	X = X.reshape(X.shape[0],3)
+	Y = Y.reshape(Y.shape[0],6)
+	
+	############################################ min max #########################################
+	scaler = MinMaxScaler()
+	X= scaler.fit_transform(X)
+	Y[:,5:]=scaler.fit_transform(Y[:,5:])
+	
+		
+	########################################### test train ################################
+	########################################## Choose a train size, and split the data into a train and test set.
+	train_size = len(X)-1
+	X_train = X[:train_size,:]
+	Y_train = Y[:train_size]
+	Y_test = Y[train_size:,:]
+	X_test = X[train_size:,:]
+	Y_train = Y_train[:,5:]
+	
+	X_train=X_train.reshape(X_train.shape[0],1,X_train.shape[1])  
+	X_test=X_test.reshape(X_test.shape[0],1,X_test.shape[1])
+	Y_train=Y_train.reshape(Y_train.shape[0],1)	
+		
+
+	##################################################### model ################################## 
+	n=15
+	model = Sequential()
+	model.add(LSTM(20,return_sequences=True,,input_shape=(1,3)))
+	model.add(LSTM(5,return_sequences=False,activation='relu')
+	model.add(Dense(1))
+	model = Sequential()
+	model.add(LSTM(5,return_sequences=True,activation='relu',input_shape=(1, 3)))
+	model.add(LSTM(5, return_sequences=True))
+	model.add(LSTM(5, return_sequences=False))
+	model.add(Dense(1))
+	model.add(Activation('linear'))
+	model.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
+	start = time.time()
+	model.fit(X_train, Y_train, epochs=n, batch_size=128)
+	print ('compilation time for the model: ', time.time() - start)
+	
+	############################################ predictions ##########################################
+	testPredict = model.predict(X_test)
+	
+	############################################## rescale ########################################
+
+	testPredict = scaler.inverse_transform(testPredict)
+	Y_test[:,5:] = scaler.inverse_transform(Y_test[:,5:])
+	print('Expected:', Y_test, 'Predicted', testPredict )
+
+	############################################ export to excel ###########################################
+	# testY=testY.reshape(testPredict.shape[0],1)
+	Y_test=pd.DataFrame(Y_test)
+	testPredict=pd.DataFrame(testPredict)
+	T_data = pd.concat([Y_test,testPredict], axis=1)
+	T_data.columns = ['Date','Open','High','Low','Close','diff_actual','diff_predict']
+	
+	############### New Variables #############
+
+	T_data['Similar'] = np.where((T_data['diff_actual']*T_data['diff_predict'])>0,"same","different")
+	T_data.to_csv("   " + "Since 2001"+"   "+ " to " + str(i) + ".csv", index=False, header=True)
+	
+
+
+#import csv files from folder
+path = r'C:/Users/user/Desktop/One_day_prediction/Multi-variate'
+allFiles = glob.glob(path + "/*.csv")
+with open('Combined.csv', 'wb') as outfile:
+    for i, fname in enumerate(glob.glob(path + "/*.csv")):
+        with open(fname, 'rb') as infile:
+            if i != 0:
+                infile.readline()  # Throw away header on all but first file
+            # Block copy rest of file from input to output without parsing
+            shutil.copyfileobj(infile, outfile)
+            print(fname + " has been imported.")

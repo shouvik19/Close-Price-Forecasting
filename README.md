@@ -12,10 +12,14 @@ Python programming was executed using the Anaconda software, as Python as a prog
  
 NsePy
 =====
-:   This library is a very useful and powerful tool in extracting historical data of NSE. This is a great tool to large amounts of historical data and also various types like Futures data, Options data and also the strike prices along with expiry can be extracted using NsePy library
+This library is a very useful and powerful tool in extracting historical data of NSE. This is a great tool to large amounts of historical data and also various types like Futures data, Options data and also the strike prices along with expiry can be extracted using NsePy library
 .
 For the data to be stored in a proper structured format and mathematical calculations and manipulations, Pandas and NumPy library were the most useful tool and made the further analysis easy.
  
-Scikit Learn:  This is one of the most useful data analysis library which is extensively used for machine learning techniques where various machine learning techniques like regression, classification, clustering, multivariate techniques and many more can be implemented. This library has all the algorithms essential for model building, evaluation metrics and also validation techniques like k-fold cross validation can be done using this.
+Scikit Learn
+=============
+This is one of the most useful data analysis library which is extensively used for machine learning techniques where various machine learning techniques like regression, classification, clustering, multivariate techniques and many more can be implemented. This library has all the algorithms essential for model building, evaluation metrics and also validation techniques like k-fold cross validation can be done using this.
  
-Keras: It is an open source neural network library written in Python. It is capable of running on top of MXNet, Deeplearning4j, TensorFlow, Microsoft Cognitive Toolkit or Theano.
+Keras 
+======
+It is an open source neural network library written in Python. It is capable of running on top of MXNet, Deeplearning4j, TensorFlow, Microsoft Cognitive Toolkit or Theano.

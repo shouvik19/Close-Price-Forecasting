@@ -25,8 +25,8 @@ Keras
 It is an open source neural network library written in Python. It is capable of running on top of MXNet, Deeplearning4j, TensorFlow, Microsoft Cognitive Toolkit or Theano.
 
 
->  Methodology
-
+  Methodology
+================
 In this project, initially Feed Forward Backpropagation Neural Network was used for the prediction. Feed forward Neural Networks is unidirectional connection between the neurons that means the information can flow only in forward direction. Input has been fed into first layer and with the help of hidden layers connected to the last layer that produces the output. There is no connection among neurons in the same layer. Since information is constantly feeding forward from one layer to the next. Hence it is called feed forward neural network.
 
 The backpropagation algorithm falls into the general category of gradient descent algorithms. Purpose of gradient descent algorithm is to find the minima/maxima of a function by iteratively moving in the direction of negative slope of the function that we want to minimize/maximize. In our problem objective is to minimize the error function.

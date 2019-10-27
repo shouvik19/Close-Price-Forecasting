@@ -10,7 +10,7 @@ In the project, the model has been validated across 5 years of the trading days.
 
 Python programming was executed using the Anaconda software, as Python as a programming language itself must be installed first and then there are many packages to install. Anaconda has all the packages already installed it has the most useful packages for Mathematics, Science and Engineering already inbuilt installed. Through our project, we explored various libraries of python software for various tasks like data extraction, manipulation, mathematical calculations, visualization, valuation metrics, etc.
  
-+NsePy+:   This library is a very useful and powerful tool in extracting historical data of NSE. This is a great tool to large amounts of historical data and also various types like Futures data, Options data and also the strike prices along with expiry can be extracted using NsePy library
+++NsePy++:   This library is a very useful and powerful tool in extracting historical data of NSE. This is a great tool to large amounts of historical data and also various types like Futures data, Options data and also the strike prices along with expiry can be extracted using NsePy library
 .
 For the data to be stored in a proper structured format and mathematical calculations and manipulations, Pandas and NumPy library were the most useful tool and made the further analysis easy.
  

@@ -121,7 +121,7 @@ for i in z:
 	
 	
 	##################################################### model ################################## 
-	look_back=1
+
 	model = Sequential()
 	model.add(LSTM(10,return_sequences=True,input_shape=(1, 1)))
 	model.add(LSTM(10, return_sequences=True))
